@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from 'zod';
 import { LoginSchema } from "@/schemas";
+import { login } from "@/actions/login";
 import { Button } from "./button";
 import { Input } from "./input";
 import Link from "next/link";
@@ -19,6 +20,10 @@ export const LogInForm = () =>{
         }
     });
 
+    const onSubmit = (values: z.infer<typeof LoginSchema>) =>{
+       login(values);
+    }
+
 
     return (
         <Card className="w-[400px]">
@@ -30,7 +35,7 @@ export const LogInForm = () =>{
             <CardContent>
 
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(()=> {})} className="space-y-7">
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
                    <div className="space-y-4">
                       <FormField
                         control={form.control}
