@@ -10,7 +10,7 @@ import { Input } from "./input";
 import { Card,CardContent,CardDescription,CardFooter,CardHeader,CardTitle } from "./card";
 import Link from "next/link";
 import { register } from "@/actions/register";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 
 export const RegisterForm = () =>{
@@ -24,10 +24,13 @@ export const RegisterForm = () =>{
     });
 
     const [isPending, startTransition] = useTransition();
-
+    const [error,setError] = useState('');
+    const [success,setSuccess] = useState('');
     const onSubmit = (values: z.infer<typeof RegisterSchema>) =>{
-        startTransition(()=>{
-            register(values);
+        startTransition(async()=>{
+           const data = await register(values);
+           if(data && data.success) setSuccess(data.success);
+           if(data && data.error) setError(data.error);
         })
     }
 
@@ -86,7 +89,17 @@ export const RegisterForm = () =>{
                   )}
                 />
               </div>
-  
+              {success && (
+                <div className="bg-green-500 text-white px-4 py-2 rounded-md">
+                  {success}
+                </div>
+              )}
+
+              {error && (
+                <div className="bg-red-500 text-white px-4 py-2 rounded-md">
+                  {error}
+                </div>
+              )}
               <Button type="submit" size="lg" className="w-full" disabled={isPending}>
               Sign up
               </Button>
